@@ -61,6 +61,21 @@ func main () {
         }
     })
 
+    app.Command("role", "get the locutus server role", func (cmd *cli.Cmd) {
+        cmd.Action = func () {
+            session := auth.GetSession(*profile, *region)
+            q := query.New(session)
+            role := q.GetRole()
+            output, err := json.MarshalIndent(role, "", "    ")
+            if err != nil {
+                msg := fmt.Sprintf("Parse Error: %s", err)
+                fmt.Println(msg)
+                os.Exit(2)
+            }
+            os.Stdout.Write(output)
+        }
+    })
+
     app.Command("nodes", "find nodes by tag", func (cmd *cli.Cmd) {
         var key = cmd.StringOpt("k key", "", "the key to filter on")
         var values = cmd.StringsOpt("v value", nil, "the value to filter on")
