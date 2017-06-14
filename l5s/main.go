@@ -61,11 +61,13 @@ func main () {
         }
     })
 
-    app.Command("role", "get the locutus server role", func (cmd *cli.Cmd) {
+    app.Command("role", "get the node role", func (cmd *cli.Cmd) {
+        var key = cmd.StringOpt("k key", "", "the tag key name to query")
+
         cmd.Action = func () {
             session := auth.GetSession(*profile, *region)
             q := query.New(session)
-            role := q.GetRole()
+            role := q.GetRole(key)
             output, err := json.MarshalIndent(role, "", "    ")
             if err != nil {
                 msg := fmt.Sprintf("Parse Error: %s", err)

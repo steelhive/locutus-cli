@@ -33,8 +33,11 @@ func (q *Query) GetSelf() ec2metadata.EC2InstanceIdentityDocument {
     return res
 }
 
-func (q *Query) GetRole() *string {
+func (q *Query) GetRole(key *string) *string {
     metadata := q.GetSelf()
+    if *key == "" {
+        *key = "locutus:role"
+    }
     name := "instance-id"
     values := make([]*string, 1)
     values[0] = &metadata.InstanceID
@@ -53,7 +56,7 @@ func (q *Query) GetRole() *string {
     instances := q.GetInstances(input)
     for _, instance := range instances {
         for _, tag := range instance.Tags {
-            if *tag.Key == "locutus:role" {
+            if *tag.Key == *key {
                 return tag.Value
             }
         }
